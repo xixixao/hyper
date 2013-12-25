@@ -560,16 +560,24 @@ return module.exports;
 define('index',['require', 'exports', 'module', './tags'], function (require, exports, module) {
   
 
-var domWrapper, tag, tags, _i, _len, __slice = [].slice;
+var domWrapper, flatten, tag, tags, _i, _len, __slice = [].slice;
 tags = require("./tags");
+flatten = function (array) {
+  var _ref;
+  if (Array.isArray(array)) {
+    return (_ref = []).concat.apply(_ref, array);
+  } else {
+    return array;
+  }
+};
 domWrapper = function (tag) {
   return function () {
     var attributes, contents;
     attributes = arguments[0], contents = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-    if (typeof attributes === "object" && !React.isValidComponent(attributes)) {
-      return React.DOM[tag](attributes, contents);
+    if (typeof attributes === "object" && !Array.isArray(attributes) && !React.isValidComponent(attributes)) {
+      return React.DOM[tag](attributes, flatten(contents));
     } else {
-      return React.DOM[tag]({}, attributes, contents);
+      return React.DOM[tag]({}, flatten([attributes].concat(contents)));
     }
   };
 };

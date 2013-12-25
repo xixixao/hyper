@@ -7,7 +7,7 @@
 
 # {_div} = _div: domWrapper 'div'
 
-{_div} = require 'hyper'
+{_div, _h3, _ul, _li, _} = require 'hyper'
 # React = require 'React'
 
 Timer = React.createClass
@@ -25,10 +25,17 @@ Timer = React.createClass
     clearInterval @interval
 
   render: ->
-    _div "#{@props.label}: #{@state.secondsElapsed}"
+    _div {},
+      _h3 "Example"
+      _ul @props.children.map (child) ->
+        _li child
+      _div "#{@props.label}: #{@state.secondsElapsed}"
 
 _Timer = Timer
 
 module.exports = ->
-  React.renderComponent (_Timer label: 'Testing elapsed seconds'),
-    document.getElementById('example')
+  timer =
+    _Timer label: 'Testing elapsed seconds',
+      "Adam"
+      "Barbara"
+  React.renderComponent timer, document.getElementById('example')
