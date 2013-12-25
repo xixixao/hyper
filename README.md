@@ -1,5 +1,4 @@
-hyper
-=====
+# hyper
 
 React.js wrapper for CoffeeScript.
 
@@ -14,3 +13,23 @@ React.renderComponent (_HelloMessage name: "John"),
 ```
 
 see [facebook/react](https://github.com/facebook/react)
+
+## Install
+
+With bower and RequireJS
+```
+bower install hyper
+```
+
+```coffee
+require
+  paths:
+    React: 'bower_components/react/react'
+    hyper: 'bower_components/hyper/hyper'
+    
+# ...
+
+React = require 'React'
+{_div, _h3, _ul, _li, _} = require 'hyper'
+
+
