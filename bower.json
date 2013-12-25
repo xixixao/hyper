@@ -10,7 +10,7 @@
     "example",
     "build",
     "bower_components",
-    ".gitignore",
+    ".gitignore"
   ],
   "dependencies": {
     "react": ""
