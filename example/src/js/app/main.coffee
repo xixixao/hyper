@@ -8,7 +8,7 @@
 # {_div} = _div: domWrapper 'div'
 
 {_div, _h3, _ul, _li, _} = require 'hyper'
-# React = require 'React'
+React = require 'React'
 
 Timer = React.createClass
   getInitialState: ->

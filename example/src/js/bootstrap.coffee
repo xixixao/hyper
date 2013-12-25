@@ -3,5 +3,5 @@ require
   urlArgs: "b=#{(new Date()).getTime()}"
   paths:
     hyper: 'vendor/hyper/hyper'
-    React: 'vendor/react/react-with-addons'
+    React: 'vendor/react/react'
   , ['app/main'], (main) -> main()

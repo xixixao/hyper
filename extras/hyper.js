@@ -10,7 +10,7 @@ var __isAMD = !!(typeof define === 'function' && define.amd),
       function(dep){
         throw new Error("uRequire detected missing dependency: '" + dep + "' - in a non-nodejs runtime. All it's binding variables were 'undefined'.")
       });
-var bundleFactory = function() {
+var bundleFactory = function(React) {
 /**
  * almond 0.2.7 Copyright (c) 2011-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -557,11 +557,19 @@ module.exports = [
 return module.exports;
 
 });
-define('index',['require', 'exports', 'module', './tags'], function (require, exports, module) {
+define('React',[],function () {
+  if (__isNode) {
+  return __nodeRequire('React');
+} else {
+  return (typeof React !== 'undefined') ? React : __nodeRequire('React')
+}
+});
+define('index',['require', 'exports', 'module', './tags', 'React'], function (require, exports, module) {
   
 
-var domWrapper, flatten, tag, tags, _i, _len, __slice = [].slice;
+var React, domWrapper, flatten, tag, tags, _i, _len, __slice = [].slice;
 tags = require("./tags");
+React = require("React");
 flatten = function (array) {
   var _ref;
   if (Array.isArray(array)) {
@@ -591,12 +599,12 @@ return module.exports;
 });    return require('index');
   };
 if (__isAMD) {
-  return define(bundleFactory);
+  return define(['React'], bundleFactory);
 } else {
     if (__isNode) {
-        return module.exports = bundleFactory();
+        return module.exports = bundleFactory(require('React'));
     } else {
-        return bundleFactory();
+        return bundleFactory((typeof React !== 'undefined') ? React : void 0);
     }
 }
 }).call(this, (typeof exports === 'object' ? global : window),
