@@ -565,6 +565,7 @@ define('React',[],function () {
 }
 });
 define('index',['require', 'exports', 'module', './tags', 'React'], function (require, exports, module) {
+  var __umodule__ = (function (require, exports, module) {
   
 
 var React, domWrapper, flatten, tag, tags, _i, _len, __slice = [].slice;
@@ -596,6 +597,10 @@ for (_i = 0, _len = tags.length; _i < _len; _i++) {
 
 return module.exports;
 
+}).call(this, require, exports, module);
+window.hyper = __umodule__;
+
+return __umodule__;
 });    return require('index');
   };
 if (__isAMD) {
