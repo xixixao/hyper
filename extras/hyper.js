@@ -568,25 +568,17 @@ define('index',['require', 'exports', 'module', './tags', 'React'], function (re
   var __umodule__ = (function (require, exports, module) {
   
 
-var React, domWrapper, flatten, tag, tags, _i, _len, __slice = [].slice;
+var React, domWrapper, tag, tags, _i, _len, __slice = [].slice;
 tags = require("./tags");
 React = require("React");
-flatten = function (array) {
-  var _ref;
-  if (Array.isArray(array)) {
-    return (_ref = []).concat.apply(_ref, array);
-  } else {
-    return array;
-  }
-};
 domWrapper = function (tag) {
   return function () {
-    var attributes, contents;
+    var attributes, contents, _ref, _ref1;
     attributes = arguments[0], contents = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
     if (typeof attributes === "object" && !Array.isArray(attributes) && !React.isValidComponent(attributes)) {
-      return React.DOM[tag](attributes, flatten(contents));
+      return (_ref = React.DOM)[tag].apply(_ref, [attributes].concat(__slice.call(contents)));
     } else {
-      return React.DOM[tag]({}, flatten([attributes].concat(contents)));
+      return (_ref1 = React.DOM)[tag].apply(_ref1, [{}].concat(__slice.call([attributes].concat(contents))));
     }
   };
 };
