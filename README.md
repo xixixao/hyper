@@ -16,20 +16,32 @@ see [facebook/react](https://github.com/facebook/react)
 
 ## Install
 
-With bower and RequireJS
+Via bower:
 ```
 bower install hyper
 ```
 
-```coffee
-require
-  paths:
-    React: 'bower_components/react/react'
-    hyper: 'bower_components/hyper/hyper'
-    
-# ...
+- Using RequireJS (with CommonJS syntax):
 
-React = require 'React'
-{_div, _h3, _ul, _li, _} = require 'hyper'
+  ```coffee
+  require
+    paths:
+      React: 'bower_components/react/react'
+      hyper: 'bower_components/hyper/hyper'
+      
+  # ...
+  
+  React = require 'React'
+  {_div, _h3, _ul, _li, _} = require 'hyper'
+  ```
 
-
+- Using globals:
+  
+  ```html
+  <script src='bower_components/react/react'></script>
+  <script src='bower_components/hyper/hyper'></script>
+  ```
+  ```coffee
+  {_div, _h3, _ul, _li, _} = hyper
+  ```
+  
