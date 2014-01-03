@@ -4,4 +4,4 @@ require
   paths:
     hyper: 'vendor/hyper/hyper'
     React: 'vendor/react/react'
-  , ['app/main'], (main) -> main()
+  , ['app/main']
