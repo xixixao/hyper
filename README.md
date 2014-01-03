@@ -1,4 +1,4 @@
-# hyper
+# Hyper
 
 React.js wrapper for CoffeeScript.
 
