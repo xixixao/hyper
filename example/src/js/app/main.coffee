@@ -1,4 +1,4 @@
-{_div, _h3, _ul, _li, _} = require 'hyper'
+{_div, _h3, _ul, _li, _} = hyper = require 'hyper'
 
 _Timer = hyper class Timer
   getInitialState: ->
