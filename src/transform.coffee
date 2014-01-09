@@ -11,20 +11,23 @@
 # """
 
 tags = require './tags'
+CoffeeScript = require 'coffee-script'
 
 # Puts the import line on the first line, so the source code is not offset
 # and error locations are correct
 module.exports = (source) ->
-  tags = tagsToImport source
+  importingTags = tagsToImport source
   normalizedSource = normalizeComponentCalls source
-  "{#{tags.join ', '}} = hyper = require 'hyper'; #{normalizedSource}"
+  imported = "{#{importingTags.join ', '}} = hyper = require 'hyper'; #{normalizedSource}"
+  (interpolate imported).compile(bare: true)
 
+# Adds an empty object literal, so the code becomes valid CS
 normalizeComponentCalls = (source) ->
   normalize = (source) ->
     source.replace ///
       (
-        (?:^|\n) # first thing on the line
-        (\s*) # indentation (new line doesn't matter)
+        (?:^|\s|\#\{) # either new line, literal space or interpolation
+        (\s*) # possible indentation
         _\w+ # tag
       )
       (
@@ -32,7 +35,16 @@ normalizeComponentCalls = (source) ->
         \2 # equal indentation on next line
         [^\S\n]+ # more indentation
       )
-    ///g, '$1 {},$3'
+      (
+        [^\n]+ # the following line
+      )
+    ///g, (match, tag, _, indent, following) ->
+      if (identifier = following.match IDENTIFIER) and identifier[2]
+        # property access, there is a props object already
+        match
+      else
+        "#{tag} {},#{indent}#{following}"
+
   # two passes, because we match before and after the replace
   normalize normalize source
 
@@ -40,54 +52,73 @@ potentialTags = (source) ->
   source.match /_\w+/g
 
 tagsToImport = (source) ->
-  (potentialTags source).filter (tag) -> tag[1..] in tags
+  map = {}
+  for tag in potentialTags source
+    if tag[1..] in tags
+      map[tag] = true
+  tag for tag, set of map when set
 
-# This is taken from original CS compiler, it has known problems, but
-# works in most cases
-balancedString = (str, end) ->
-  continueCount = 0
-  stack = [end]
-  for i in [1...str.length]
-    if continueCount
-      --continueCount
-      continue
-    switch letter = str.charAt i
-      when '\\'
-        ++continueCount
-        continue
-      when end
-        stack.pop()
-        unless stack.length
-          return str[0..i]
-        end = stack[stack.length - 1]
-        continue
-    if end is '}' and letter in ['"', "'"]
-      stack.push end = letter
-    else if end is '}' and letter is '/' and match = (HEREGEX.exec(str[i..]) or REGEX.exec(str[i..]))
-      continueCount += match[0].length - 1
-    else if end is '}' and letter is '{'
-      stack.push end = '}'
-    else if end is '"' and prev is '#' and letter is '{'
-      stack.push end = '}'
-    prev = letter
-  # shouldn't get here, error
+# nodewalk from macros.coffee
+nodewalk = (n, visit, dad = undefined) ->
+  return unless n.children
+  dad = n if n.expressions
+  for name in n.children
+    return unless kid = n[name]
+    if kid instanceof Array
+      for child, i in kid
+        visit child, ((node) -> kid[i] = node), dad
+        nodewalk child, visit, dad
+    else
+      visit kid, ((node)-> kid = n[name] = node), dad
+      nodewalk kid, visit, dad
+  n
 
+interpolate = (source) ->
+  nodes = CoffeeScript.nodes source
+  # console.log nodes.toString()
 
-# Regex-matching-regexes.
-REGEX = /// ^
-  (/ (?! [\s=] )   # disallow leading whitespace or equals signs
-  [^ [ / \n \\ ]*  # every other thing
-  (?:
-    (?: \\[\s\S]   # anything escaped
-      | \[         # character class
-           [^ \] \n \\ ]*
-           (?: \\[\s\S] [^ \] \n \\ ]* )*
-         ]
-    ) [^ [ / \n \\ ]*
-  )*
-  /) ([imgy]{0,4}) (?!\w)
+  nodewalk nodes, (node, set) ->
+    if isTagNode node
+      node.args[0..] = [].concat (
+        interpolatingNode arg for arg in node.args
+      )...
+      # console.log "ARGS"
+      # node.args.map (args) -> console.log  arg.toString()
+      # console.log "ARGS"
+
+isTagNode = (node) ->
+  node.constructor.name is 'Call' and node.variable.base.value?[0] is '_'
+
+interpolatingNode = (node) ->
+  if node.constructor.name is 'Op' and node.operator is '+' and
+      [node.first, node.second].some isStringNode
+    [].concat [ interpolatingNode node.first
+      interpolatingNode node.second ]...
+  else if child = isWrappedNode node
+    interpolatingNode child
+  else
+    [node]
+
+isWrappedNode = (node) ->
+  if node.constructor.name in ['Parens', 'Block'] and node.children.length is 1 or
+      node.constructor.name is 'Value' and node.properties.length is 0
+    children = []
+    node.eachChild (child) -> children.push child
+    children[0]
+  else
+    false
+
+isStringNode = (node) ->
+  if IS_STRING.test node.base?.value
+    node
+  else if child = isWrappedNode node
+    isStringNode child
+  else
+    false
+
+IS_STRING = /^['"]/
+
+IDENTIFIER = /// ^
+  ( [$A-Za-z_\x7f-\uffff][$\w\x7f-\uffff]* )
+  ( [^\n\S]* : (?!:) )?  # Is this a property name?
 ///
-
-HEREGEX      = /// ^ /{3} ((?:\\?[\s\S])+?) /{3} ([imgy]{0,4}) (?!\w) ///
-
-
