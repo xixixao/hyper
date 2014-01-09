@@ -5,10 +5,11 @@ React.js wrapper for CoffeeScript.
 ```coffee
 _HelloMessage = hyper class HelloMessage
   render: ->
-    _div "Hello #{@props.name}"
+    _div
+      "Hello #{@props.name}"
 
 hyper.render document.getElementById('container'),
-  _HelloMessage name: "John"
+  _HelloMessage name: _strong "John"
 ```
 
 Features:
@@ -17,6 +18,12 @@ Features:
 - components don't require props as first argument
 - `_` prefixed bultin tags allow nice syntax
 - `render` method swaps order of arguments of `renderComponent`
+
+Compile Features:
+
+- tags get auto required
+- component implicit calling allows nicer syntax
+- interpolation in component children allows components between strings
 
 see [facebook/react](https://github.com/facebook/react)
 
