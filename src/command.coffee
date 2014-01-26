@@ -1,17 +1,26 @@
-path        = require 'path'
-fs          = require 'fs'
+path       = require 'path'
+fs         = require 'fs'
+program    = require 'commander'
 transform  = require './transform'
 
-targetDirectory = process.argv[2]
-fileName = process.argv[3]
+exports.run = ->
 
-code = fs.readFileSync fileName, "utf-8"
-compiled = transform code
+  program
+    .version('0.0.4')
+    .usage('outputDirectory pathToFile')
+    .description('Compile hyper files to JavaScript')
+    .parse(process.argv)
 
-baseName = path.basename fileName
+  targetDirectory = program.args[0]
+  fileName = program.args[1]
 
-while extension = path.extname baseName
-  baseName = path.basename baseName
+  code = fs.readFileSync fileName, "utf-8"
+  compiled = transform code
 
-targetFileName = path.basename fileName, fileName
-fs.writeFileSync "#{targetDirectory}/#{baseName}.coffee", compiled, "utf-8"
+  extension1 = path.extname fileName
+  baseName = path.basename fileName, extension1
+
+  extension2 = path.extname baseName
+  baseName = path.basename baseName, extension2 if extension2 in ['.h', '.hyper']
+
+  fs.writeFileSync "#{targetDirectory}/#{baseName}.js", compiled, "utf-8"

@@ -1,16 +1,42 @@
 {
   "name": "hyper",
-  "version": "0.0.4",
   "description": "",
-  "main": "lib/index.js",
+  "keywords": [
+    "coffeescript",
+    "react",
+    "compiler"
+  ],
+  "version": "0.0.4",
+  "homepage": "http://xixixao.github.io/hyper",
+  "bugs": "https://github.com/xixixao/hyper/issues",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/xixixao/hyper.git"
+  },
+  "main": "./lib/hyper/index.js",
+  "directories": {
+    "lib": "./lib/hyper"
+  },
+  "bin": {
+    "hyper": "./bin/hyper"
+  },
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha test --compilers coffee:./node_modules/coffee-script/register"
+  },
   "dependencies": {
-    "react": ""
+    "react": "~0.8.0",
+    "coffee-script": "git://github.com/jashkenas/coffee-script"
   },
   "devDependencies": {
-    "chai": "",
-    "coffee-script": "",
-    "mocha": "",
-    "urequire": ""
+    "browserify": "~3.24.1",
+    "chai": "~1.8.1",
+    "gulp-coffee": "~1.2.5",
+    "gulp-util": "~2.2.12",
+    "gulp": "~3.4.1",
+    "mocha": "~1.17.1",
+    "gulp-clean": "~0.2.4",
+    "gulp-browserify": "~0.3.4",
+    "gulp-rename": "~0.2.2"
   },
   "author": "xixixao",
   "license": "MIT license"

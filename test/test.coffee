@@ -1,9 +1,10 @@
 chai = require 'chai'
 
-React = require 'React'
+React = require 'react'
 
 transform = require '../lib/hyper/transform'
-log = (i) -> console.log i; i
+
+log = (i) -> console.log i; console.log "AAAAAAAA"; i
 run = (hyperCoffee) -> eval log transform hyperCoffee
 
 chai.should()

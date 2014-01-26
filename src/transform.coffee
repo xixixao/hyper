@@ -17,7 +17,7 @@ CoffeeScript = require 'coffee-script'
 # and error locations are correct
 module.exports = (source) ->
   importingTags = tagsToImport source
-  normalizedSource = normalizeComponentCalls source
+  normalizedSource = normalizeComponentCalls underscoreHyperClasses source
   imported = "{#{importingTags.join ', '}} = hyper = require 'hyper'; #{normalizedSource}"
   (interpolate imported).compile(bare: true)
 
@@ -39,7 +39,7 @@ normalizeComponentCalls = (source) ->
         [^\n]+ # the following line
       )
     ///g, (match, tag, _, indent, following) ->
-      if (identifier = following.match IDENTIFIER) and identifier[2]
+      if (identifier = following.match ///^ #{IDENTIFIER}///) and identifier[2]
         # property access, there is a props object already
         match
       else
@@ -47,6 +47,9 @@ normalizeComponentCalls = (source) ->
 
   # two passes, because we match before and after the replace
   normalize normalize source
+
+underscoreHyperClasses = (source) ->
+  source.replace ///(hyper\sclass\s#{IDENTIFIER.source})///, '_$2 = $1'
 
 potentialTags = (source) ->
   source.match /_\w+/g
@@ -118,7 +121,7 @@ isStringNode = (node) ->
 
 IS_STRING = /^['"]/
 
-IDENTIFIER = /// ^
+IDENTIFIER = ///
   ( [$A-Za-z_\x7f-\uffff][$\w\x7f-\uffff]* )
   ( [^\n\S]* : (?!:) )?  # Is this a property name?
 ///
