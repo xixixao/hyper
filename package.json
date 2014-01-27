@@ -28,7 +28,6 @@
     "coffee-script": "git://github.com/jashkenas/coffee-script"
   },
   "devDependencies": {
-    "browserify": "~3.24.1",
     "chai": "~1.8.1",
     "gulp-coffee": "~1.2.5",
     "gulp-util": "~2.2.12",

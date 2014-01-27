@@ -10,9 +10,7 @@ Hyper uses gulp for building. Use `npm test` to run the test suite.
 By default build all, then watch all sources and create all targets.
 
     gulp.task 'default', ['build', 'watch']
-    gulp.task 'build', ->
-      gulp.run 'clean'
-      gulp.run 'lib', 'extras'
+    gulp.task 'build', ['clean', 'lib', 'extras']
 
 We need to build everything if lib changes.
 
@@ -22,7 +20,7 @@ We need to build everything if lib changes.
 Remove all built files.
 
     gulp.task 'clean', ->
-    gulp.src ['lib/hyper/', 'extras'], read: no
+      gulp.src ['lib/hyper/', 'extras'], read: no
         .pipe clean()
 
 Compile lib from CoffeeScript
@@ -37,10 +35,12 @@ Using browserify because the result is smaller than with almond.
 
     gulp.task 'extras', ['lib'], ->
       gulp.src 'lib/hyper/lib.js'
-        .pipe browserify debug: !gulp.env.production, external: ['react']
+        .pipe browserify()
+          .on 'prebundle', (bundle) -> bundle.external 'react'
         .pipe rename 'hyper.js'
         .pipe gulp.dest 'extras'
-      # gulp.src 'lib/hyper/transform.js'
-      #   .pipe browserify {debug: !gulp.env.production}
-      #   # .pipe rename 'compiler.js'
-      #   .pipe gulp.dest 'extras'
+      gulp.src 'lib/hyper/transform.js'
+        .pipe browserify()
+          .on 'prebundle', (bundle) -> bundle.external 'coffee-script'
+        .pipe rename 'compiler.js'
+        .pipe gulp.dest 'extras'

@@ -49,7 +49,7 @@ normalizeComponentCalls = (source) ->
   normalize normalize source
 
 underscoreHyperClasses = (source) ->
-  source.replace ///(hyper\sclass\s#{IDENTIFIER.source})///, '_$2 = $1'
+  source.replace ///(hyper\sclass\s#{IDENTIFIER})///, '_$2 = $1'
 
 potentialTags = (source) ->
   source.match /_\w+/g
@@ -124,4 +124,4 @@ IS_STRING = /^['"]/
 IDENTIFIER = ///
   ( [$A-Za-z_\x7f-\uffff][$\w\x7f-\uffff]* )
   ( [^\n\S]* : (?!:) )?  # Is this a property name?
-///
+///.source

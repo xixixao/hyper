@@ -1,6 +1,3 @@
-urequire:
-  rootExports: 'hyper'
-
 tags = require './tags'
 React = require 'react'
 
