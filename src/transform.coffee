@@ -52,7 +52,7 @@ underscoreHyperClasses = (source) ->
   source.replace ///(hyper\sclass\s#{IDENTIFIER})///, '_$2 = $1'
 
 potentialTags = (source) ->
-  source.match /_\w+/g
+  (source.match /_\w+/g) or []
 
 tagsToImport = (source) ->
   map = {}
