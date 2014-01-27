@@ -11,7 +11,7 @@
 # """
 
 tags = require './tags'
-CoffeeScript = require 'coffee-script'
+CoffeeScript = require 'coffee-script' if not CoffeeScript
 
 # Puts the import line on the first line, so the source code is not offset
 # and error locations are correct

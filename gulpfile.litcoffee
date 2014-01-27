@@ -15,15 +15,15 @@ By default build all, then watch all sources and create all targets.
 We need to build everything if lib changes.
 
     gulp.task 'watch', ->
-      gulp.watch 'src/**/*', ['lib', 'extras']
+      gulp.watch 'src/**/*.coffee', ['lib', 'extras']
 
 Remove all built files.
 
     gulp.task 'clean', ->
-      gulp.src ['lib/hyper/', 'extras'], read: no
+      gulp.src ['lib/hyper/*', 'extras/*'], read: no
         .pipe clean()
 
-Compile lib from CoffeeScript
+Compile sources from CoffeeScript to JavaScript.
 
     gulp.task 'lib', ->
       gulp.src 'src/**/*.coffee'
@@ -35,12 +35,12 @@ Using browserify because the result is smaller than with almond.
 
     gulp.task 'extras', ['lib'], ->
       gulp.src 'lib/hyper/lib.js'
-        .pipe browserify()
+        .pipe browserify standalone: 'hyper'
           .on 'prebundle', (bundle) -> bundle.external 'react'
         .pipe rename 'hyper.js'
         .pipe gulp.dest 'extras'
       gulp.src 'lib/hyper/transform.js'
-        .pipe browserify()
+        .pipe browserify standalone: 'hyper-transform'
           .on 'prebundle', (bundle) -> bundle.external 'coffee-script'
         .pipe rename 'compiler.js'
         .pipe gulp.dest 'extras'

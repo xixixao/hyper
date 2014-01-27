@@ -6,30 +6,40 @@ React = require 'react'
 {run} = require './utils'
 
 describe 'hyper transform', ->
+  it 'should automatically import tags', ->
+    React.isValidComponent run '''
+      _div()
+    '''
+    .should.be.true
+
   it 'should enable yaml-like syntax', ->
-    React.isValidComponent(run '''
+    React.isValidComponent run '''
       _div
         _div()
-    ''').should.be.true
+    '''
+    .should.be.true
 
-    React.isValidComponent(run '''
+    React.isValidComponent run '''
       _div style: width: 30,
         _div()
-    ''').should.be.true
+    '''
+    .should.be.true
 
-    React.isValidComponent(run '''
+    React.isValidComponent run '''
       _div
         style:
           width: 30
         _div()
-    ''').should.be.true
+    '''
+    .should.be.true
 
   it 'should hoist hyper classes as underscored components', ->
-    React.isValidComponent(run '''
+    React.isValidComponent run '''
       hyper class Component
         render: ->
       _Component()
-    ''').should.be.true
+    '''
+    .should.be.true
 
   describe 'interpolations', ->
     runFake = (hyperCoffee) -> run '''
@@ -40,17 +50,19 @@ describe 'hyper transform', ->
     ''' + hyperCoffee
 
     it 'should allow components inside interpolation', ->
-      (runFake '''
+      runFake '''
         _div "Hello #{_strong 'traveller'}."
-      ''').should.equal 'Hello , world, .'
+      '''
+      .should.equal 'Hello , world, .'
 
     it 'should allow nested interpolations', ->
-      (runFake '''
+      runFake '''
         _div "Hello #{_div "my #{_strong 'plan'} is?"}."
-      ''').should.equal 'Hello , my , world,  is?, .'
+      '''
+      .should.equal 'Hello , my , world,  is?, .'
 
     it 'should allow mixing interpolations and argument interpolations', ->
-      (runFake '''
+      runFake '''
         _article
           style:
             compilicated: "something #{'here'}"
@@ -59,7 +71,8 @@ describe 'hyper transform', ->
               "Something #{'very'} complex"
           } is happening"
           _div "Hello straight #{'away'}"
-      ''').should.eql [
+      '''
+      .should.eql [
         style: compilicated: 'something here'
         ''
         'world'

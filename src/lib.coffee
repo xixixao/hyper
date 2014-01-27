@@ -1,5 +1,5 @@
 tags = require './tags'
-React = require 'react'
+React = require 'react' if not React
 
 # For debugging, pull out displayName from class declaration
 #

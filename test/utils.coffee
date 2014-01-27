@@ -1,4 +1,4 @@
-transform = require '../lib/hyper/transform'
+transform = require '../src/transform'
 
 module.exports =
   # hyper is available via symlinked node_modules/hyper
